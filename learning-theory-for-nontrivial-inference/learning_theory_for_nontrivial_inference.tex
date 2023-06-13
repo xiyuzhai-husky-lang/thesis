@@ -1,0 +1,99 @@
+%:
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+\usepackage{diagbox}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\theoremstyle{definition}
+\newtheorem*{defn}{Definition}
+\newtheorem*{prop}{Proposition}
+\newtheorem*{eg}{Example}
+\newtheorem*{thm}{Theorem}
+\newtheorem*{corol}{Corollary}
+\newtheorem{ex}{Exercise}[section]
+{\theoremstyle{plain}
+\newtheorem*{rmk}{Remark}
+\newtheorem*{rmks}{Remarks}
+\newtheorem*{lt}{Last time}
+}
+\newtheorem*{lem}{Lemma}
+\usepackage{color}
+\usepackage{CJK}
+\title{Learning Theory for Nontrivial Inference}
+\author{Xiyu Zhai}
+\date{}							% Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+\tableofcontents
+\abstract{
+	We study learning theory in the setting where inference is nontrivial computationally. We show that semisupervised learning algorithms based on select-verify has a nontrivial advantage over supervised learning, including close to human sample complexity. We specialize our theories for computer visions and did experiments to verify our claims. This shall shed light upon the future evolution of AI, leading to sample efficient deep learning or even better.
+}
+
+\section{Introduction}
+
+Deep learning has been very successful in the passing decade, however, it's still far from human in certain aspects, say, sample complexity for few shot learning. It takes human very few examples to recognize objects, play games well, but it takes machines thousands times more to perform at the same level. It's still unclear how to overcome these shortcomings.
+
+We shed light on these issues through rethinking machine learning setup. Typically, machine learning theory assumes no computational difficulty in inference, which in our views potentially misses important structures. We make a new PAC learning setup that takes into account nontrivial computational structure in inference, such that there is a tradeoff between sample complexity and computational complexity leading to nontrivial algorithms. 
+
+Our discussion is domain specific in nature. We specialise our theories for computer vision to study the case of shape classification, MNIST for example. We did experiments to verify the assumptions aligh perfectly with the dataset. This relates to Hinton's work on deformable models.
+
+\section{Related Work}
+
+\paragraph{Energy Model}
+
+\paragraph{}
+
+\section{Setup}
+
+Input space $\mathcal{X}$, output space $\mathcal{Y}$, a realizable hypothesis class $\mathcal{H}_0$, i.e. an a priori set containing functions from $X$ to $Y$.
+
+Note that we use $\mathcal{H}_0$ to denote that it's special. It's the minimal hypothesis class that is realizable based on a priori assumptions. We shall define more hypothesis classes because it's probably hard to work in the original $\mathcal{H}_0$.
+
+We assume that functions in $\mathcal{H}$ is computationally nontrivial. In this paper, we assume that there are sets $\mathcal{W}$ (weight space) and $\mathcal{C}$ (configuration space) and a score function $s: \mathcal{X}\times \mathcal{W}\times \mathcal{C}\times \mathcal{Y}\to \mathbb{R}$, then
+\begin{equation}
+	h_{w}(x):=\mathop{\text{argmin}}\limits_{y\in \mathcal{Y}}\sup_{c\in \mathcal{C}} s(x, w, c, y).
+\end{equation}
+
+if argmin gives more than one element, pick the one according to some predefined order.
+
+We assume $s$ is easy to compute, at least in $P$.
+
+\begin{rmk}
+	This can lead to NP problem.
+
+	Suppose $\mathcal{Y} = \{\text{true}, \text{false}\}$, and that $s(x,w,c,\text{false})\equiv 0$, then $h_w(x)=\text{true}$ when
+	\begin{equation}
+		\sup_{c\in \mathcal{C}}s(x, w, c, \text{true}) > 0
+	\end{equation}
+
+	which is equivalent to
+	\begin{equation}
+		\exists c\in \mathcal{C}, s(x, w, c, \text{true}) > 0,
+	\end{equation}
+
+	which is in NP.
+
+	Pick a nice $s$, we can make $h_w$ NP-hard.
+
+	However, we wouldn't necessarily make it this hard, but harder than there could be a simple "analytical" solution for this.
+\end{rmk}
+
+\section{Learning Complexity}
+
+\section{Shape Classification}
+
+\section{Experiments on MNIST}
+
+\section{Conclusion}
+
+\section{Future Work}
+
+\end{document}

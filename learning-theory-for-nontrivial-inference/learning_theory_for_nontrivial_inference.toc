@@ -1,10 +1,12 @@
 \contentsline {section}{\numberline {1}Introduction}{1}%
 \contentsline {section}{\numberline {2}Related Work}{2}%
+\contentsline {paragraph}{Bayesian Model}{2}%
 \contentsline {paragraph}{Energy Model}{2}%
-\contentsline {paragraph}{}{2}%
+\contentsline {paragraph}{Theoretical Computer Science}{2}%
+\contentsline {paragraph}{Reinforcement Learning}{2}%
 \contentsline {section}{\numberline {3}Setup}{2}%
-\contentsline {section}{\numberline {4}Learning Complexity}{3}%
-\contentsline {section}{\numberline {5}Shape Classification}{3}%
+\contentsline {section}{\numberline {4}Relaxation of Hypothesis Class}{3}%
+\contentsline {section}{\numberline {5}Learning Complexity}{3}%
 \contentsline {section}{\numberline {6}Experiments on MNIST}{3}%
-\contentsline {section}{\numberline {7}Conclusion}{3}%
-\contentsline {section}{\numberline {8}Future Work}{3}%
+\contentsline {section}{\numberline {7}Conclusion}{5}%
+\contentsline {section}{\numberline {8}Future Work}{5}%

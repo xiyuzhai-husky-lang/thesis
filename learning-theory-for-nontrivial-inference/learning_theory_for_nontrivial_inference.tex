@@ -14,7 +14,7 @@
 \theoremstyle{definition}
 \newtheorem*{defn}{Definition}
 \newtheorem*{prop}{Proposition}
-\newtheorem*{eg}{Example}
+\newtheorem*{example}{Example}
 \newtheorem*{thm}{Theorem}
 \newtheorem*{corol}{Corollary}
 \newtheorem{ex}{Exercise}[section]
@@ -26,7 +26,7 @@
 \newtheorem*{lem}{Lemma}
 \usepackage{color}
 \usepackage{CJK}
-\title{Learning Theory for Nontrivial Inference}
+\title{Semisupervised Learning Theory for Tasks with Computational Nontrivial Inference}
 \author{Xiyu Zhai}
 \date{}							% Activate to display a given date or no date
 
@@ -34,7 +34,7 @@
 \maketitle
 \tableofcontents
 \abstract{
-	We study learning theory in the setting where inference is nontrivial computationally. We show that semisupervised learning algorithms based on select-verify has a nontrivial advantage over supervised learning, including close to human sample complexity. We specialize our theories for computer visions and did experiments to verify our claims. This shall shed light upon the future evolution of AI, leading to sample efficient deep learning or even better.
+	We study learning theory in the setting where inference is nontrivial computationally. We show that semisupervised learning algorithms based on select-verify has a nontrivial advantage over supervised learning, including close to human sample complexity. We specialize our theories for computer visions and did experiments to verify our claims. We also show that this has connection with reinforcement learning. This shall shed light upon the future evolution of AI, leading to sample efficient deep learning or even better.
 }
 
 \section{Introduction}
@@ -47,9 +47,13 @@ Our discussion is domain specific in nature. We specialise our theories for comp
 
 \section{Related Work}
 
+\paragraph{Bayesian Model}
+
 \paragraph{Energy Model}
 
-\paragraph{}
+\paragraph{Theoretical Computer Science}
+
+\paragraph{Reinforcement Learning}
 
 \section{Setup}
 
@@ -59,7 +63,7 @@ Note that we use $\mathcal{H}_0$ to denote that it's special. It's the minimal h
 
 We assume that functions in $\mathcal{H}$ is computationally nontrivial. In this paper, we assume that there are sets $\mathcal{W}$ (weight space) and $\mathcal{C}$ (configuration space) and a score function $s: \mathcal{X}\times \mathcal{W}\times \mathcal{C}\times \mathcal{Y}\to \mathbb{R}$, then
 \begin{equation}
-	h_{w}(x):=\mathop{\text{argmin}}\limits_{y\in \mathcal{Y}}\sup_{c\in \mathcal{C}} s(x, w, c, y).
+	h_{w}(x):=\mathop{\text{argmax}}\limits_{y\in \mathcal{Y}}\sup_{c\in \mathcal{C}} s(x, w, c, y).
 \end{equation}
 
 if argmin gives more than one element, pick the one according to some predefined order.
@@ -83,14 +87,112 @@ We assume $s$ is easy to compute, at least in $P$.
 
 	Pick a nice $s$, we can make $h_w$ NP-hard.
 
-	However, we wouldn't necessarily make it this hard, but harder than there could be a simple "analytical" solution for this.
+	However, we wouldn't necessarily make it this hard, but harder than there could be a simple ``analytical'' solution for this so that learning is needed.
 \end{rmk}
+
+\section{Relaxation of Hypothesis Class}
+
+We can approximate $h_w$ by
+
+\begin{equation}
+	\tilde h_{w,\{c_1,\cdots,c_n\}}:=\mathop{\text{argmax}}\limits_{y\in \mathcal{Y}}\max_{i\in [n]} s(x, w, c_i(x), y).
+\end{equation}
+
+where $c_1,\cdots,c_n$ are functions $\mathcal{X}\to \mathcal{C}$, called configuration selectors.
+
+Basically, we break a ML problem into learning a verifier and then learning configuration selectors. Learning verifier needs labeled samples, but learning configuration selectors needs only unlabeled samples.
 
 \section{Learning Complexity}
 
-\section{Shape Classification}
+Suppose
 
 \section{Experiments on MNIST}
+
+
+ We claim our theories characterize exactly the MNIST dataset.
+
+\begin{example}[MNIST] Here we describe briefly a function in mathematical terms which we believe is the ground truth for the MNIST dataset. Details can be seen in appendix.
+
+We take the convention that the fill of the digits is white and the background is black.
+
+The image is represented by a $[0,1]$-valued $28\times 28$ matrix $I=(I_{ij})_{0\le i\le 27, 0\le j\le 27}$.
+
+\begin{itemize}
+	\item \textbf{digit one of the simplest kind}, which constitutes 95\% of all images of digit one.
+
+A typical image looks like this:
+
+[an image here]
+
+Think about how it's drawn. The person when writing down a digit one like this has an ideal version in mind, a straight line that is almost vertical. So take $\Gamma_1$ to be the set of straight lines with slopes satisfying some easy constraint. Then we should define $\mathfrak{s}(x;\gamma)$ for $\gamma\in \Gamma_1$ such that
+\begin{itemize}
+	\item for "most" points over $\gamma$, it's surrounded by white pixels;
+	\item for "most" non-white pixels, it's away from $\gamma$.
+\end{itemize}
+
+One choice could be
+\begin{equation}
+	\mathfrak{s}(x; \gamma)=a_1\int_{0}^1  \max_{(i,j)\in [27]\times[27]}1_{\|\gamma(t) - (i,j)\|_2 < \epsilon} I_{ij}dt
+	-
+	a_2\sum_{(i,j)\in [27]\times[27]} 1_{I_{ij}< 0.5}\text{dist}((i,j), \gamma)
+\end{equation}
+
+where $\epsilon$ is an appropriate small number and $a_1,a_2>0$ are appropriate coefficients.
+
+In fact the function applies when $\gamma$ is any path, not necessarily a straight line. Formally it is defined over the path space (without basepoint) $\Gamma= M([0,1], [0,1]^2)$.
+
+The dimensionality of the configuration space is 6, which can possibly be reduced to 5.
+
+\item \textbf{digit seven of the simplest kind}.
+
+A typical image looks like this:
+
+[an image here]
+
+Here we consider all continuous $\gamma:[0,2]\to [0,1]^2$ such that $\gamma|_{[0,1]}, \gamma|_{[1,2]}$ are straight line segments. Additionally, there should be some constraint on the positions of $\gamma(0), \gamma(1), \gamma(2)$ such that $\overline{\gamma(0)\gamma(1)}$ is very close to being horizontal, and $\overline{\gamma(1)\gamma(2)}$ should be roughly vertical downward.
+
+The score function $\mathfrak{s}$ is the same.
+
+The dimensionality of the configuration space is 6, which can actually be reduced to 5.
+
+\item \textbf{digit zero}.
+
+We consider smooth curves $\gamma:[0,L]\to [0,1]^2$ with arc length parametrization such that the mean curvature is always nonnegative, i.e.
+\begin{equation}
+	\|\gamma'(t)\|\equiv 1
+\end{equation}
+and
+\begin{equation}
+	\gamma''(t)\times \gamma'(t) \ge 0
+\end{equation}
+
+Additionally, we require that $\gamma(0)$ is very close to $\gamma(L)$.
+
+We should also require that $\gamma$ is nondegenerate, which can be characterized by isoperimetric inequality.
+
+All these $\gamma$ form $\Gamma_0$.
+
+And we still use the same score funtion $\mathfrak{s}$.
+
+\item \textbf{general case}. Fix a graph $G=(V,E)$. Give it a natural topological structure and identify each $e$ with $[0,1]$. For each $e\in E$, we give assign a $\sigma_e$ which is one of the following classes of curves:
+
+\begin{itemize}
+	\item nonconvex but not straight
+	\item nonconcave but not straight
+	\item straight.
+\end{itemize}
+
+We define the total space as
+\begin{equation}
+	\Omega_G = \left\{\gamma\in M(G, [0,1]^2): \forall e\in E, \gamma|_e\in \sigma_e\right\}.
+\end{equation}
+
+Then the configuration space $\Gamma_G$ is a subset of $\Omega_G$ such that it is given by a boolean function $s$ in the sense that
+\begin{equation}
+	1_{\Gamma_G}(\gamma)=s((\gamma(v))_{v\in V},((\gamma|_e'(0), \gamma|_e'(1), \text{dist}(\gamma|_e,\overline{\gamma|_e(0)\gamma|_e(1)})))_{e\in E})
+\end{equation}
+\end{itemize}
+\end{example}
 
 \section{Conclusion}
 
